@@ -1,0 +1,13 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws --version
+  build:
+    commands:
+      - pwd
+      - ls -ltra
+      - echo Build and Sync on 'date'
+      - ./build_and_sync_s3.sh

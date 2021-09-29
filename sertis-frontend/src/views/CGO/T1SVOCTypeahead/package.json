@@ -1,0 +1,6 @@
+{
+  "name": "T1SVOCTypeahead",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./T1SVOCTypeahead.js"
+}

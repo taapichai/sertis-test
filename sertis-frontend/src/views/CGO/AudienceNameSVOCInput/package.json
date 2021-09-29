@@ -1,0 +1,7 @@
+{
+    "name": "AudienceNameSVOCInput",
+    "version": "0.0.1",
+    "private": true,
+    "main": "./AudienceNameSVOCInput.js"
+  }
+  
