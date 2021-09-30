@@ -1,18 +1,18 @@
-from django.shortcuts import render
-
 # Create your views here.
 from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from mini_blog import form
 from mini_blog.form import CardForm, CardDestroyUpdateForm
 from mini_blog.models import Card
+from mini_blog.permission import IsOwner
 from mini_blog.serializers import CardSerializer
 
 
 class CardListCreateAPIView(generics.ListCreateAPIView):
     queryset = Card.objects.filter(status=True)
     serializer_class = CardSerializer
+    permission_classes = (IsAuthenticated, IsOwner)
 
     def get(self, request, *args, **kwargs):
         serializer = CardSerializer(self.get_queryset(), many=True)
@@ -29,7 +29,7 @@ class CardListCreateAPIView(generics.ListCreateAPIView):
                 status=request.data['status'],
                 content=request.data['content'],
                 category=request.data['category'],
-                author=request.data['author'],
+                author=request.user,
             )
             return Response(CardSerializer(card).data, status=status.HTTP_200_OK)
         else:
@@ -37,6 +37,7 @@ class CardListCreateAPIView(generics.ListCreateAPIView):
 
 
 class CardRetrieveDestroyUpdateAPIView(generics.RetrieveDestroyAPIView, generics.UpdateAPIView):
+    permission_classes = (IsAuthenticated, IsOwner)
 
     def get(self, request, *args, **kwargs):
         destroy_form = CardDestroyUpdateForm(self.kwargs)
@@ -47,7 +48,9 @@ class CardRetrieveDestroyUpdateAPIView(generics.RetrieveDestroyAPIView, generics
     def delete(self, request, *args, **kwargs):
         destroy_form = CardDestroyUpdateForm(self.kwargs)
         if destroy_form.is_valid():
-            Card.objects.get(pk=self.kwargs['id']).delete()
+            card = Card.objects.get(pk=self.kwargs['id'])
+            self.check_object_permissions(self.request, card)
+            card.delete()
             return Response(status=status.HTTP_200_OK)
         else:
             return Response(destroy_form.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -57,11 +60,12 @@ class CardRetrieveDestroyUpdateAPIView(generics.RetrieveDestroyAPIView, generics
         card_form = CardForm(request.data)
         if id_form.is_valid() & card_form.is_valid():
             updating_card = Card.objects.get(pk=self.kwargs['id'])
+            self.check_object_permissions(self.request, updating_card)
             updating_card.name = request.data['name']
             updating_card.status = request.data['status']
             updating_card.content = request.data['content']
             updating_card.category = request.data['category']
-            updating_card.author = request.data['author']
+            updating_card.author = request.user
             updating_card.save()
             return Response(CardSerializer(updating_card).data, status=status.HTTP_200_OK)
         else:
