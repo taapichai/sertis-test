@@ -94,6 +94,27 @@ function* callInitCustomAudienceState(action) {
   yield put({ type: "LIST_T1_ATHENA_JOB", payload });
 }
 
+function* callInitBlogState(action) {
+  const url = CGO_API + "/mini_blog/";
+
+  const params = {
+    method: "GET",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + sessionStorage.getItem("cc")
+    }
+  };
+  try {
+    const response = yield call(fetch, url, params);
+    const data = yield response.json();
+    yield put({ type: "LIST_BLOG_SUCCEEDED", cards: data });
+  } catch (error) {
+    yield put({ type: "LIST_BLOG_FAILED", error });
+  }
+}
+
+
 function* callListAdAccount(action) {
   const { bm_id } = action.payload;
   const url = CGO_API + "/business-manager/" + bm_id + "/ad-accounts/";
@@ -223,6 +244,10 @@ function* watchInitCustomAudienceState() {
   yield takeEvery("INIT_CUSTOM_AUDIENCE_STATE", callInitCustomAudienceState);
 }
 
+function* watchInitBlogState() {
+  yield takeEvery("INIT_BLOG_STATE", callInitBlogState);
+}
+
 function* watchListAdAccount() {
   yield takeEvery("LIST_AD_ACCOUNT", callListAdAccount);
 }
@@ -257,6 +282,7 @@ function* watchDeleteAudience() {
 
 export default function* customAudienceSaga() {
   yield all([
+    watchInitBlogState(),
     watchInitCustomAudienceState(),
     watchListAdAccount(),
     watchListBrand(),
