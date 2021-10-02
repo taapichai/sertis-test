@@ -131,7 +131,7 @@ function* callSaveOrUpdateCard(action) {
   let mode = yield select(getCardMode);
 
   let http_method = "POST"
-  if (mode == "EDIT") {
+  if (mode === "EDIT") {
     http_method = "PUT"
     url = url + id + "/"
   }
@@ -153,7 +153,7 @@ function* callSaveOrUpdateCard(action) {
 
   };
   try {
-    const response = yield call(fetch, url, params);
+    yield call(fetch, url, params);
     yield put({ type: "INIT_BLOG_STATE", cards: [] });
   } catch (error) {
     yield put({ type: "LIST_BLOG_FAILED", error });
@@ -174,7 +174,7 @@ function* callRemoveCard(action) {
     },
   };
   try {
-    const response = yield call(fetch, url, params);
+    yield call(fetch, url, params);
     yield put({ type: "INIT_BLOG_STATE", cards: [] });
   } catch (error) {
     yield put({ type: "LOAD_CARD_FAILED", error });

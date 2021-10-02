@@ -11,9 +11,7 @@ import {
   Card, CardBody, CardHeader, Col, Collapse,
   DropdownToggle, DropdownMenu, DropdownItem,
   Row,  Fade } from 'reactstrap';
-import { AppSwitch } from '@coreui/react'
 import CardFooter from 'reactstrap/lib/CardFooter';
-import { useHistory } from "react-router-dom";
 
 
 class BlogCards extends Component {
