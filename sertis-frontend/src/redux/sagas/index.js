@@ -154,11 +154,34 @@ function* callSaveOrUpdateCard(action) {
   };
   try {
     const response = yield call(fetch, url, params);
+    yield put({ type: "INIT_BLOG_STATE", cards: [] });
   } catch (error) {
     yield put({ type: "LIST_BLOG_FAILED", error });
   }
 
 }
+
+function* callRemoveCard(action) {
+  const { id } = action.payload;
+  const url = CGO_API + "/mini_blog/" + id + "/";
+
+  const params = {
+    method: "DELETE",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + sessionStorage.getItem("cc")
+    },
+  };
+  try {
+    const response = yield call(fetch, url, params);
+    yield put({ type: "INIT_BLOG_STATE", cards: [] });
+  } catch (error) {
+    yield put({ type: "LOAD_CARD_FAILED", error });
+  }
+
+}
+
 
 function* callRetreiveCard(action) {
   const { id } = action.payload;
@@ -312,11 +335,15 @@ function* watchInitCustomAudienceState() {
 }
 
 function* watchInitBlogState() {
-  yield takeEvery("INIT_BLOG_STATE", callInitBlogState);
+  yield takeLatest("INIT_BLOG_STATE", callInitBlogState);
 }
 
 function* watchSaveOrUpdateCardState() {
-  yield takeEvery("SAVE_OR_UPDATE_CARD", callSaveOrUpdateCard);
+  yield takeLatest("SAVE_OR_UPDATE_CARD", callSaveOrUpdateCard);
+}
+
+function* watchRemoveCardState() {
+  yield takeLatest("REMOVE_CARD_STATE", callRemoveCard);
 }
 
 function* watchUpdateBlogState() {
@@ -360,6 +387,7 @@ export default function* customAudienceSaga() {
     watchInitBlogState(),
     watchSaveOrUpdateCardState(),
     watchUpdateBlogState(),
+    watchRemoveCardState(),
     watchInitCustomAudienceState(),
     watchListAdAccount(),
     watchListBrand(),

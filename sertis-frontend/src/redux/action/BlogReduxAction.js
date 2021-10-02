@@ -1,5 +1,5 @@
 import { INIT_BLOG_STATE, UPDATE_CARD_NAME, UPDATE_CONTENT, 
-  UPDATE_CATEGORY, UPDATE_STATUS, SAVE_OR_UPDATE_CARD, UPDATE_CARD_STATE } from "./actionTypes";
+  UPDATE_CATEGORY, UPDATE_STATUS, SAVE_OR_UPDATE_CARD, UPDATE_CARD_STATE, REMOVE_CARD_STATE } from "./actionTypes";
 
 
 export function initBlogState() {
@@ -62,3 +62,11 @@ export function saveOrUpdateCard() {
   };
 }
 
+export function removeCardState(id) {
+  return {
+    type: REMOVE_CARD_STATE,
+    payload: {
+      id: id
+    }
+  };
+}

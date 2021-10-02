@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import {
   initBlogState,
   updateCardState,
+  removeCardState,
 } from "../../../redux/action";
 
 import { 
@@ -23,6 +24,7 @@ class BlogCards extends Component {
     this.newCardHandle = this.newCardHandle.bind(this);
     this.toggleDropDown = this.toggleDropDown.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
     this.toggleFade = this.toggleFade.bind(this);
     this.state = {
       collapse: true,
@@ -41,6 +43,10 @@ class BlogCards extends Component {
     history.push("/blog/forms");
   }
 
+  handleRemove(event) {
+    let id = event.currentTarget.id
+    this.props.removeCardState(id);
+  }
 
   newCardHandle() {
     const { history } = this.props;
@@ -85,8 +91,8 @@ class BlogCards extends Component {
                       <i className="icon-settings"></i>
                     </DropdownToggle>
                     <DropdownMenu right>
-                      <DropdownItem id={data.id} onClick={this.handleEdit} value>Edit</DropdownItem>
-                      <DropdownItem>Remove</DropdownItem>
+                      <DropdownItem id={data.id} onClick={this.handleEdit}>Edit</DropdownItem>
+                      <DropdownItem id={data.id} onClick={this.handleRemove}>Remove</DropdownItem>
                     </DropdownMenu>
                   </ButtonDropdown>
                 </ButtonGroup>
@@ -144,6 +150,7 @@ function mapStateToProps(state) {
 export const mapDispatchToProps = dispatch => ({
   initBlogState: () => dispatch(initBlogState()),
   updateCardState: (id, mode) => dispatch(updateCardState(id, mode)),
+  removeCardState: id => dispatch(removeCardState(id)),
 });
 
 export default connect(
