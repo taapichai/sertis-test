@@ -36,7 +36,7 @@ class BlogCards extends Component {
   
   handleEdit(event) {
     let id = event.currentTarget.id
-    this.props.updateCardState(id);
+    this.props.updateCardState(id, "EDIT");
     const { history } = this.props;
     history.push("/blog/forms");
   }
@@ -143,7 +143,7 @@ function mapStateToProps(state) {
 
 export const mapDispatchToProps = dispatch => ({
   initBlogState: () => dispatch(initBlogState()),
-  updateCardState: id => dispatch(updateCardState(id)),
+  updateCardState: (id, mode) => dispatch(updateCardState(id, mode)),
 });
 
 export default connect(

@@ -8,11 +8,12 @@ export function initBlogState() {
     };
 }
 
-export function updateCardState(id) {
+export function updateCardState(id, mode) {
   return {
     type: UPDATE_CARD_STATE,
     payload: {
       id: id,
+      mode: mode
     }
   };
 }

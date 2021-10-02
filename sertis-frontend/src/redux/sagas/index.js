@@ -18,7 +18,9 @@ import {
   getCardName,
   getContent,
   getCategory,
-  getStatus
+  getStatus,
+  getCardId,
+  getCardMode
 } from "../selectors";
 
 const CGO_API = process.env.REACT_APP_CGO_API;
@@ -119,20 +121,30 @@ function* callInitBlogState(action) {
 }
 
 function* callSaveOrUpdateCard(action) {
-  const url = CGO_API + "/mini_blog/";
+  let url = CGO_API + "/mini_blog/";
   const cardName = yield select(getCardName);
   const content = yield select(getContent);
   const category = yield select(getCategory);
   const status = yield select(getStatus);
 
+  let id = yield select(getCardId);
+  let mode = yield select(getCardMode);
+
+  let http_method = "POST"
+  if (mode == "EDIT") {
+    http_method = "PUT"
+    url = url + id + "/"
+  }
+
   const params = {
-    method: "POST",
+    method: http_method,
     mode: "cors",
     headers: {
       "Content-Type": "application/json",
       "Authorization": "Bearer " + sessionStorage.getItem("cc")
     },
     body: JSON.stringify({
+      id: id,
       name: cardName,
       content: content,
       category: category,
@@ -142,8 +154,6 @@ function* callSaveOrUpdateCard(action) {
   };
   try {
     const response = yield call(fetch, url, params);
-    const data = yield response.json();
-    yield put({ type: "LIST_BLOG_SUCCEEDED", cards: data });
   } catch (error) {
     yield put({ type: "LIST_BLOG_FAILED", error });
   }
