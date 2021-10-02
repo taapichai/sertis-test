@@ -13,7 +13,7 @@ import {
   UPDATE_AUDIENCE_NAME_SYNC
 } from "./actionTypes";
 
-export { initBlogState, updateCardName, updateContent, updateCategory } from "./BlogReduxAction";
+export { initBlogState, updateCardName, updateContent, updateCategory, updateStatus, saveOrUpdateCard } from "./BlogReduxAction";
 export { selectedAudienceDate } from "./AudienceDateReduxAction";
 export { listBrand, selectedBrands } from "./BrandReduxAction";
 export { listDepartments, selectedDepartments } from "./DepartmentReduxAction";

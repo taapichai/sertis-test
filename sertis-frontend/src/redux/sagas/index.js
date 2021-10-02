@@ -14,7 +14,11 @@ import {
   getSelectedBM,
   getSelectedBrands,
   getSelectedBU,
-  getSelectedDepartments
+  getSelectedDepartments,
+  getCardName,
+  getContent,
+  getCategory,
+  getStatus
 } from "../selectors";
 
 const CGO_API = process.env.REACT_APP_CGO_API;
@@ -112,6 +116,39 @@ function* callInitBlogState(action) {
   } catch (error) {
     yield put({ type: "LIST_BLOG_FAILED", error });
   }
+}
+
+function* callSaveOrUpdateCard(action) {
+  const payload = action.payload;
+  const url = CGO_API + "/mini_blog/";
+  const cardName = yield select(getCardName);
+  const content = yield select(getContent);
+  const category = yield select(getCategory);
+  const status = yield select(getStatus);
+
+  const params = {
+    method: "POST",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + sessionStorage.getItem("cc")
+    },
+    body: JSON.stringify({
+      name: cardName,
+      content: content,
+      category: category,
+      status: status,
+    })
+
+  };
+  try {
+    const response = yield call(fetch, url, params);
+    const data = yield response.json();
+    yield put({ type: "LIST_BLOG_SUCCEEDED", cards: data });
+  } catch (error) {
+    yield put({ type: "LIST_BLOG_FAILED", error });
+  }
+
 }
 
 
@@ -248,6 +285,11 @@ function* watchInitBlogState() {
   yield takeEvery("INIT_BLOG_STATE", callInitBlogState);
 }
 
+function* watchSaveOrUpdateCardState() {
+  yield takeEvery("SAVE_OR_UPDATE_CARD", callSaveOrUpdateCard);
+}
+
+
 function* watchListAdAccount() {
   yield takeEvery("LIST_AD_ACCOUNT", callListAdAccount);
 }
@@ -283,6 +325,7 @@ function* watchDeleteAudience() {
 export default function* customAudienceSaga() {
   yield all([
     watchInitBlogState(),
+    watchSaveOrUpdateCardState(),
     watchInitCustomAudienceState(),
     watchListAdAccount(),
     watchListBrand(),

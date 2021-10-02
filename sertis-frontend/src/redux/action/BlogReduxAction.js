@@ -1,4 +1,4 @@
-import { INIT_BLOG_STATE, UPDATE_CARD_NAME, UPDATE_CONTENT, UPDATE_CATEGORY } from "./actionTypes";
+import { INIT_BLOG_STATE, UPDATE_CARD_NAME, UPDATE_CONTENT, UPDATE_CATEGORY, UPDATE_STATUS, SAVE_OR_UPDATE_CARD } from "./actionTypes";
 
 
 export function initBlogState() {
@@ -35,4 +35,19 @@ export function updateCategory(category) {
   };
 }
 
+
+export function updateStatus(status) {
+  return {
+    type: UPDATE_STATUS,
+    payload: {
+      status: status,
+    }
+  };
+}
+
+export function saveOrUpdateCard() {
+  return {
+    type: SAVE_OR_UPDATE_CARD,
+  };
+}
 

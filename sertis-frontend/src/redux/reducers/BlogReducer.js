@@ -4,6 +4,8 @@ import {
     UPDATE_CARD_NAME,
     UPDATE_CONTENT,
     UPDATE_CATEGORY,
+    UPDATE_STATUS,
+    INIT_BLOG_STATE,
 } from "../action/actionTypes";
   
 const initialState = {
@@ -12,6 +14,11 @@ const initialState = {
 
 export default function buildBlog(state = initialState, action) {  
     switch (action.type) {
+      case INIT_BLOG_STATE:
+        return {
+          ...state,
+          status: true,
+        };
       case LIST_BLOG_SUCCEEDED:
         return {
           ...state,
@@ -40,6 +47,12 @@ export default function buildBlog(state = initialState, action) {
         return {
           ...state,
           category: category,
+        };    
+      case UPDATE_STATUS:
+        const { status } = action.payload;  
+        return {
+          ...state,
+          status: status,
         };    
       default:
         return state;

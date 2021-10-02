@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {
+  saveOrUpdateCard,
   updateCardName,
   updateContent,
-  updateCategory
+  updateCategory,
+  updateStatus,
 } from "../../../redux/action";
 
 import {
@@ -42,6 +44,8 @@ class BlogForms extends Component {
     this.handleCardNameChange = this.handleCardNameChange.bind(this);
     this.handleContentChange = this.handleContentChange.bind(this);
     this.handleCategoryChange = this.handleCategoryChange.bind(this);
+    this.handleStatusChange = this.handleStatusChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.toggleFade = this.toggleFade.bind(this);
     this.state = {
       collapse: true,
@@ -60,6 +64,16 @@ class BlogForms extends Component {
 
   handleCategoryChange(category) {
     this.props.updateCategory(category.target.value)
+  }
+
+  handleStatusChange(status) {
+    this.props.updateStatus(status.target.checked)
+  }
+
+  handleSubmit(event) {
+    this.props.saveOrUpdateCard(this.state);
+    const { history } = this.props;
+    history.push("/blog/cards");
   }
 
   handleBack() {
@@ -108,7 +122,11 @@ class BlogForms extends Component {
                     value={this.props.category}/>
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="country">Status</Label> <AppSwitch className={'mx-1'} color={'primary'} checked />
+                  <Label htmlFor="country">Status</Label> 
+                  <AppSwitch className={'mx-1'} color={'primary'} 
+                    onChange={this.handleStatusChange}
+                    required="required"  
+                    checked={this.props.status} />
                 </FormGroup>
               </CardBody>
               <CardFooter>
@@ -117,7 +135,7 @@ class BlogForms extends Component {
                   size="sm"
                   color="primary"
                   disabled={this.props.submitIsDisabled}
-                  onClick={this.handleSubmitBuildAudience}>
+                  onClick={this.handleSubmit}>
                   <i className="fa fa-dot-circle-o"></i> Submit
                 </Button>
                 <Button
@@ -141,10 +159,13 @@ function mapStateToProps(state) {
     cardName,
     content,
     category,
+    status
   } = state.blog;
   return {
     cardName: cardName,
     content: content,
+    category: category,
+    status: status
   };
 }
 
@@ -153,6 +174,8 @@ export const mapDispatchToProps = dispatch => ({
   updateCardName: cardName => dispatch(updateCardName(cardName)),
   updateContent: content => dispatch(updateContent(content)),
   updateCategory: category => dispatch(updateCategory(category)),
+  updateStatus: status => dispatch(updateStatus(status)),
+  saveOrUpdateCard: data => dispatch(saveOrUpdateCard(data)),
 });
 
 export default connect(
