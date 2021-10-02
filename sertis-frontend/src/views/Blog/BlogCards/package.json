@@ -1,0 +1,6 @@
+{
+  "name": "BlogCards",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./BlogCards.js"
+}

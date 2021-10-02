@@ -2,6 +2,7 @@ import React from 'react';
 
 const Breadcrumbs = React.lazy(() => import('./views/Base/Breadcrumbs'));
 const Cards = React.lazy(() => import('./views/Base/Cards'));
+const BlogCards = React.lazy(() => import('./views/Blog/BlogCards'));
 const Carousels = React.lazy(() => import('./views/Base/Carousels'));
 const Collapses = React.lazy(() => import('./views/Base/Collapses'));
 const Dropdowns = React.lazy(() => import('./views/Base/Dropdowns'));
@@ -49,6 +50,7 @@ const routes = [
   { path: '/cgo-mkt/custom-audience-svoc', name: 'Custom Audiences (SVOC)', component: CustomAudienceSVOC },
   { path: '/cgo-mkt/offline-revenue', name: 'Build And Upload Offine Revenue', component: BuildOfflineRevenue },
   
+  { path: '/blog/cards', name: 'BlogCards', component: BlogCards },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
   { path: '/theme/colors', name: 'Colors', component: Colors },

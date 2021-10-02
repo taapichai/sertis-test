@@ -10,12 +10,13 @@ from mini_blog.serializers import CardSerializer
 
 
 class CardListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Card.objects.filter(status=True)
+    queryset = []
     serializer_class = CardSerializer
     permission_classes = (IsAuthenticated, IsOwner)
 
     def get(self, request, *args, **kwargs):
-        serializer = CardSerializer(self.get_queryset(), many=True)
+        cards = Card.objects.all()
+        serializer = CardSerializer(cards, many=True)
         return Response(
             data=serializer.data,
             status=status.HTTP_200_OK

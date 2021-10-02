@@ -18,6 +18,7 @@ import {
   Tooltips,
 } from './Base';
 
+import { BlogCards } from './Blog';
 import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
 import Charts from './Charts';
 import Dashboard from './Dashboard';
@@ -65,5 +66,6 @@ export {
   Cards,
   Breadcrumbs,
   Paginations,
+  BlogCards,
 };
 

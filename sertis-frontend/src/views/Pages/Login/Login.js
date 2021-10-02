@@ -69,10 +69,8 @@ class Login extends Component {
       const user = jwt_decode(sessionStorage.getItem("cc"))
 
       sessionStorage.setItem("user_id", user.user_id)
-      sessionStorage.setItem("user_name", user.user_details.username)
-      sessionStorage.setItem("user_group", user.user_details.groups)
 
-      history.push('/cgo-mkt/custom-audience');
+      history.push('/blog/cards');
     })
     .catch((err) => {
       this.setState({ danger: !this.state.danger, });
