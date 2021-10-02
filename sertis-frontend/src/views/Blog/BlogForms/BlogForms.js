@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {
   updateCardName,
+  updateContent,
 } from "../../../redux/action";
 
 import {
@@ -38,6 +39,7 @@ class BlogForms extends Component {
     this.toggle = this.toggle.bind(this);
     this.handleBack = this.handleBack.bind(this);
     this.handleCardNameChange = this.handleCardNameChange.bind(this);
+    this.handleContentChange = this.handleContentChange.bind(this);
     this.toggleFade = this.toggleFade.bind(this);
     this.state = {
       collapse: true,
@@ -48,6 +50,10 @@ class BlogForms extends Component {
 
   handleCardNameChange(cardName) {
     this.props.updateCardName(cardName.target.value)
+  }
+
+  handleContentChange(content) {
+    this.props.updateContent(content.target.value)
   }
 
   handleBack() {
@@ -83,7 +89,10 @@ class BlogForms extends Component {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="content">Content</Label>
-                  <Input type="text" id="content" placeholder="Enter your content." />
+                  <Input type="text" id="content" placeholder="Enter your content." 
+                    onChange={this.handleContentChange}
+                    required="required"
+                    value={this.props.content}/>
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="category">Category</Label>
@@ -130,6 +139,7 @@ function mapStateToProps(state) {
 export const mapDispatchToProps = dispatch => ({
   // sendT1Query: data => dispatch(sendT1Query(data)),
   updateCardName: cardName => dispatch(updateCardName(cardName)),
+  updateContent: cardName => dispatch(updateContent(cardName)),
 });
 
 export default connect(
