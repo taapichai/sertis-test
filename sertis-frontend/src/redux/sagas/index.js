@@ -14,7 +14,13 @@ import {
   getSelectedBM,
   getSelectedBrands,
   getSelectedBU,
-  getSelectedDepartments
+  getSelectedDepartments,
+  getCardName,
+  getContent,
+  getCategory,
+  getStatus,
+  getCardId,
+  getCardMode
 } from "../selectors";
 
 const CGO_API = process.env.REACT_APP_CGO_API;
@@ -114,6 +120,90 @@ function* callInitBlogState(action) {
   }
 }
 
+function* callSaveOrUpdateCard(action) {
+  let url = CGO_API + "/mini_blog/";
+  const cardName = yield select(getCardName);
+  const content = yield select(getContent);
+  const category = yield select(getCategory);
+  const status = yield select(getStatus);
+
+  let id = yield select(getCardId);
+  let mode = yield select(getCardMode);
+
+  let http_method = "POST"
+  if (mode == "EDIT") {
+    http_method = "PUT"
+    url = url + id + "/"
+  }
+
+  const params = {
+    method: http_method,
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + sessionStorage.getItem("cc")
+    },
+    body: JSON.stringify({
+      id: id,
+      name: cardName,
+      content: content,
+      category: category,
+      status: status,
+    })
+
+  };
+  try {
+    const response = yield call(fetch, url, params);
+    yield put({ type: "INIT_BLOG_STATE", cards: [] });
+  } catch (error) {
+    yield put({ type: "LIST_BLOG_FAILED", error });
+  }
+
+}
+
+function* callRemoveCard(action) {
+  const { id } = action.payload;
+  const url = CGO_API + "/mini_blog/" + id + "/";
+
+  const params = {
+    method: "DELETE",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + sessionStorage.getItem("cc")
+    },
+  };
+  try {
+    const response = yield call(fetch, url, params);
+    yield put({ type: "INIT_BLOG_STATE", cards: [] });
+  } catch (error) {
+    yield put({ type: "LOAD_CARD_FAILED", error });
+  }
+
+}
+
+
+function* callRetreiveCard(action) {
+  const { id } = action.payload;
+  const url = CGO_API + "/mini_blog/" + id + "/";
+
+  const params = {
+    method: "GET",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + sessionStorage.getItem("cc")
+    },
+  };
+  try {
+    const response = yield call(fetch, url, params);
+    const data = yield response.json();
+    yield put({ type: "LOAD_CARD_SUCCEEDED", card: data });
+  } catch (error) {
+    yield put({ type: "LOAD_CARD_FAILED", error });
+  }
+
+}
 
 function* callListAdAccount(action) {
   const { bm_id } = action.payload;
@@ -245,7 +335,19 @@ function* watchInitCustomAudienceState() {
 }
 
 function* watchInitBlogState() {
-  yield takeEvery("INIT_BLOG_STATE", callInitBlogState);
+  yield takeLatest("INIT_BLOG_STATE", callInitBlogState);
+}
+
+function* watchSaveOrUpdateCardState() {
+  yield takeLatest("SAVE_OR_UPDATE_CARD", callSaveOrUpdateCard);
+}
+
+function* watchRemoveCardState() {
+  yield takeLatest("REMOVE_CARD_STATE", callRemoveCard);
+}
+
+function* watchUpdateBlogState() {
+  yield takeEvery("UPDATE_CARD_STATE", callRetreiveCard);
 }
 
 function* watchListAdAccount() {
@@ -283,6 +385,9 @@ function* watchDeleteAudience() {
 export default function* customAudienceSaga() {
   yield all([
     watchInitBlogState(),
+    watchSaveOrUpdateCardState(),
+    watchUpdateBlogState(),
+    watchRemoveCardState(),
     watchInitCustomAudienceState(),
     watchListAdAccount(),
     watchListBrand(),

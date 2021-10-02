@@ -2,26 +2,66 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {
   initBlogState,
+  updateCardState,
+  removeCardState,
 } from "../../../redux/action";
 
-import { Button, Card, CardBody, CardHeader, Col, Row, Collapse, Fade } from 'reactstrap';
+import { 
+  Button, ButtonGroup, ButtonDropdown, 
+  Card, CardBody, CardHeader, Col, Collapse,
+  DropdownToggle, DropdownMenu, DropdownItem,
+  Row,  Fade } from 'reactstrap';
 import { AppSwitch } from '@coreui/react'
 import CardFooter from 'reactstrap/lib/CardFooter';
+import { useHistory } from "react-router-dom";
+
 
 class BlogCards extends Component {
   constructor(props) {
     super(props);
 
     this.toggle = this.toggle.bind(this);
+    this.newCardHandle = this.newCardHandle.bind(this);
+    this.toggleDropDown = this.toggleDropDown.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
     this.toggleFade = this.toggleFade.bind(this);
     this.state = {
       collapse: true,
       fadeIn: true,
-      timeout: 300
+      timeout: 300,
+      dropdownOpen: new Array(99).fill(false),
     };
 
     this.props.initBlogState();
   }
+  
+  handleEdit(event) {
+    let id = event.currentTarget.id
+    this.props.updateCardState(id, "EDIT");
+    const { history } = this.props;
+    history.push("/blog/forms");
+  }
+
+  handleRemove(event) {
+    let id = event.currentTarget.id
+    this.props.removeCardState(id);
+  }
+
+  newCardHandle() {
+    const { history } = this.props;
+    history.push("/blog/forms");
+  }
+
+  toggleDropDown(i) {
+    const newArray = this.state.dropdownOpen.map((element, index) => {
+      return (index === i ? !element : false);
+    });
+    this.setState({
+      dropdownOpen: newArray,
+    });
+  }
+
 
   showAuthor = data => {
     var result = null;
@@ -43,14 +83,19 @@ class BlogCards extends Component {
             <Card>
               <CardHeader>
                 {data.name}
-                <div className="card-header-actions">
-                  {/*eslint-disable-next-line*/}
-                  <a href="#" className="card-header-action btn btn-setting"><i className="icon-settings"></i></a>
-                  {/*eslint-disable-next-line*/}
-                  <a className="card-header-action btn btn-minimize" data-target="#collapseExample" onClick={this.toggle}><i className="icon-arrow-up"></i></a>
-                  {/*eslint-disable-next-line*/}
-                  <a className="card-header-action btn btn-close" onClick={this.toggleFade}><i className="icon-close"></i></a>
-                </div>
+                <ButtonGroup className="float-right">
+                  <ButtonDropdown id={data.id} isOpen={this.state.dropdownOpen[data.id]} toggle={() => {
+                      this.toggleDropDown(data.id);
+                    }}>
+                    <DropdownToggle caret className="p-0">
+                      <i className="icon-settings"></i>
+                    </DropdownToggle>
+                    <DropdownMenu right>
+                      <DropdownItem id={data.id} onClick={this.handleEdit}>Edit</DropdownItem>
+                      <DropdownItem id={data.id} onClick={this.handleRemove}>Remove</DropdownItem>
+                    </DropdownMenu>
+                  </ButtonDropdown>
+                </ButtonGroup>
               </CardHeader>
               <Collapse isOpen={this.state.collapse} id="collapseExample">
                 <CardBody>
@@ -76,59 +121,12 @@ class BlogCards extends Component {
   }
 
   render() {
-    var rowsPerPage = [
-      {
-        "id": 1,
-        "name": "test1",
-        "content": "Content",
-        "author": 
-          {
-            "name":"author1"
-          }
-      },
-      {
-        "id": 2,
-        "name": "test1",
-        "content": "Content",
-        "author": 
-          {
-            "name":"author1"
-          }
-      },
-      {
-        "id": 3,
-        "name": "test1",
-        "content": "Content",
-        "author": 
-          {
-            "name":"author1"
-          }
-      },
-      {
-        "id": 4,
-        "name": "test1",
-        "content": "Content",
-        "author": 
-          {
-            "name":"author1"
-          }
-      },
-      {
-        "id": 5,
-        "name": "test1",
-        "content": "Content",
-        "author": 
-          {
-            "name":"author1"
-          }
-      },
-    ];
     return (
       <div className="animated fadeIn">
         <Row>
           <Col xs="12" sm="6" md="4">
             <Card>
-              <Button size="sm" color="success">Action</Button>
+              <Button size="sm" color="success" onClick={this.newCardHandle}>New</Button>
             </Card>  
           </Col>
         </Row>  
@@ -151,6 +149,8 @@ function mapStateToProps(state) {
 
 export const mapDispatchToProps = dispatch => ({
   initBlogState: () => dispatch(initBlogState()),
+  updateCardState: (id, mode) => dispatch(updateCardState(id, mode)),
+  removeCardState: id => dispatch(removeCardState(id)),
 });
 
 export default connect(
