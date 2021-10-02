@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import {
   updateCardName,
   updateContent,
+  updateCategory
 } from "../../../redux/action";
 
 import {
@@ -40,6 +41,7 @@ class BlogForms extends Component {
     this.handleBack = this.handleBack.bind(this);
     this.handleCardNameChange = this.handleCardNameChange.bind(this);
     this.handleContentChange = this.handleContentChange.bind(this);
+    this.handleCategoryChange = this.handleCategoryChange.bind(this);
     this.toggleFade = this.toggleFade.bind(this);
     this.state = {
       collapse: true,
@@ -54,6 +56,10 @@ class BlogForms extends Component {
 
   handleContentChange(content) {
     this.props.updateContent(content.target.value)
+  }
+
+  handleCategoryChange(category) {
+    this.props.updateCategory(category.target.value)
   }
 
   handleBack() {
@@ -96,7 +102,10 @@ class BlogForms extends Component {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="category">Category</Label>
-                  <Input type="text" id="category" placeholder="Enter category name" />
+                  <Input type="text" id="category" placeholder="Enter category name" 
+                    onChange={this.handleCategoryChange}
+                    required="required"
+                    value={this.props.category}/>
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="country">Status</Label> <AppSwitch className={'mx-1'} color={'primary'} checked />
@@ -130,16 +139,20 @@ class BlogForms extends Component {
 function mapStateToProps(state) {
   const {
     cardName,
+    content,
+    category,
   } = state.blog;
   return {
     cardName: cardName,
+    content: content,
   };
 }
 
 export const mapDispatchToProps = dispatch => ({
   // sendT1Query: data => dispatch(sendT1Query(data)),
   updateCardName: cardName => dispatch(updateCardName(cardName)),
-  updateContent: cardName => dispatch(updateContent(cardName)),
+  updateContent: content => dispatch(updateContent(content)),
+  updateCategory: category => dispatch(updateCategory(category)),
 });
 
 export default connect(

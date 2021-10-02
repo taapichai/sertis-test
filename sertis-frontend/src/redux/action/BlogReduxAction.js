@@ -1,4 +1,4 @@
-import { INIT_BLOG_STATE, UPDATE_CARD_NAME, UPDATE_CONTENT } from "./actionTypes";
+import { INIT_BLOG_STATE, UPDATE_CARD_NAME, UPDATE_CONTENT, UPDATE_CATEGORY } from "./actionTypes";
 
 
 export function initBlogState() {
@@ -24,4 +24,15 @@ export function updateContent(content) {
     }
   };
 }
+
+
+export function updateCategory(category) {
+  return {
+    type: UPDATE_CATEGORY,
+    payload: {
+      category: category,
+    }
+  };
+}
+
 

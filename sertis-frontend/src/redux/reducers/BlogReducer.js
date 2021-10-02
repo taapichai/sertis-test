@@ -3,6 +3,7 @@ import {
     LIST_BLOG_FAILED,
     UPDATE_CARD_NAME,
     UPDATE_CONTENT,
+    UPDATE_CATEGORY,
 } from "../action/actionTypes";
   
 const initialState = {
@@ -33,6 +34,12 @@ export default function buildBlog(state = initialState, action) {
         return {
           ...state,
           content: content,
+        };    
+      case UPDATE_CATEGORY:
+        const { category } = action.payload;  
+        return {
+          ...state,
+          category: category,
         };    
       default:
         return state;
