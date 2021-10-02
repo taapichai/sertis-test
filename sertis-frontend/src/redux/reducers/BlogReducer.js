@@ -1,6 +1,7 @@
 import {
     LIST_BLOG_SUCCEEDED,
     LIST_BLOG_FAILED,
+    LOAD_CARD_SUCCEEDED,
     UPDATE_CARD_NAME,
     UPDATE_CONTENT,
     UPDATE_CATEGORY,
@@ -53,6 +54,16 @@ export default function buildBlog(state = initialState, action) {
         return {
           ...state,
           status: status,
+        };    
+      case LOAD_CARD_SUCCEEDED:
+        const { card } = action;  
+        return {
+          ...state,
+          id: card.id,
+          cardName: card.name,
+          content: card.content,
+          category: card.category,
+          status: card.status,
         };    
       default:
         return state;

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {
   initBlogState,
+  updateCardState,
 } from "../../../redux/action";
 
 import { 
@@ -21,6 +22,7 @@ class BlogCards extends Component {
     this.toggle = this.toggle.bind(this);
     this.newCardHandle = this.newCardHandle.bind(this);
     this.toggleDropDown = this.toggleDropDown.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
     this.toggleFade = this.toggleFade.bind(this);
     this.state = {
       collapse: true,
@@ -32,6 +34,13 @@ class BlogCards extends Component {
     this.props.initBlogState();
   }
   
+  handleEdit(event) {
+    let id = event.currentTarget.id
+    this.props.updateCardState(id);
+    const { history } = this.props;
+    history.push("/blog/forms");
+  }
+
 
   newCardHandle() {
     const { history } = this.props;
@@ -76,10 +85,8 @@ class BlogCards extends Component {
                       <i className="icon-settings"></i>
                     </DropdownToggle>
                     <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another action</DropdownItem>
-                      <DropdownItem disabled>Disabled action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
+                      <DropdownItem id={data.id} onClick={this.handleEdit} value>Edit</DropdownItem>
+                      <DropdownItem>Remove</DropdownItem>
                     </DropdownMenu>
                   </ButtonDropdown>
                 </ButtonGroup>
@@ -136,6 +143,7 @@ function mapStateToProps(state) {
 
 export const mapDispatchToProps = dispatch => ({
   initBlogState: () => dispatch(initBlogState()),
+  updateCardState: id => dispatch(updateCardState(id)),
 });
 
 export default connect(

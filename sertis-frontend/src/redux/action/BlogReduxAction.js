@@ -1,10 +1,20 @@
-import { INIT_BLOG_STATE, UPDATE_CARD_NAME, UPDATE_CONTENT, UPDATE_CATEGORY, UPDATE_STATUS, SAVE_OR_UPDATE_CARD } from "./actionTypes";
+import { INIT_BLOG_STATE, UPDATE_CARD_NAME, UPDATE_CONTENT, 
+  UPDATE_CATEGORY, UPDATE_STATUS, SAVE_OR_UPDATE_CARD, UPDATE_CARD_STATE } from "./actionTypes";
 
 
 export function initBlogState() {
     return {
       type: INIT_BLOG_STATE,
     };
+}
+
+export function updateCardState(id) {
+  return {
+    type: UPDATE_CARD_STATE,
+    payload: {
+      id: id,
+    }
+  };
 }
 
 export function updateCardName(cardName) {

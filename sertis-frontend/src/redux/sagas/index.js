@@ -119,7 +119,6 @@ function* callInitBlogState(action) {
 }
 
 function* callSaveOrUpdateCard(action) {
-  const payload = action.payload;
   const url = CGO_API + "/mini_blog/";
   const cardName = yield select(getCardName);
   const content = yield select(getContent);
@@ -151,6 +150,27 @@ function* callSaveOrUpdateCard(action) {
 
 }
 
+function* callRetreiveCard(action) {
+  const { id } = action.payload;
+  const url = CGO_API + "/mini_blog/" + id + "/";
+
+  const params = {
+    method: "GET",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + sessionStorage.getItem("cc")
+    },
+  };
+  try {
+    const response = yield call(fetch, url, params);
+    const data = yield response.json();
+    yield put({ type: "LOAD_CARD_SUCCEEDED", card: data });
+  } catch (error) {
+    yield put({ type: "LOAD_CARD_FAILED", error });
+  }
+
+}
 
 function* callListAdAccount(action) {
   const { bm_id } = action.payload;
@@ -289,6 +309,9 @@ function* watchSaveOrUpdateCardState() {
   yield takeEvery("SAVE_OR_UPDATE_CARD", callSaveOrUpdateCard);
 }
 
+function* watchUpdateBlogState() {
+  yield takeEvery("UPDATE_CARD_STATE", callRetreiveCard);
+}
 
 function* watchListAdAccount() {
   yield takeEvery("LIST_AD_ACCOUNT", callListAdAccount);
@@ -326,6 +349,7 @@ export default function* customAudienceSaga() {
   yield all([
     watchInitBlogState(),
     watchSaveOrUpdateCardState(),
+    watchUpdateBlogState(),
     watchInitCustomAudienceState(),
     watchListAdAccount(),
     watchListBrand(),
