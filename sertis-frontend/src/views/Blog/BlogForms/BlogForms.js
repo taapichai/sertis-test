@@ -1,4 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from "react-redux";
+import {
+  updateCardName,
+} from "../../../redux/action";
+
 import {
   Badge,
   Button,
@@ -31,7 +36,8 @@ class BlogForms extends Component {
     super(props);
 
     this.toggle = this.toggle.bind(this);
-    this.backHandle = this.backHandle.bind(this);
+    this.handleBack = this.handleBack.bind(this);
+    this.handleCardNameChange = this.handleCardNameChange.bind(this);
     this.toggleFade = this.toggleFade.bind(this);
     this.state = {
       collapse: true,
@@ -40,7 +46,11 @@ class BlogForms extends Component {
     };
   }
 
-  backHandle() {
+  handleCardNameChange(cardName) {
+    this.props.updateCardName(cardName.target.value)
+  }
+
+  handleBack() {
     const { history } = this.props;
     history.push("/blog/cards");
   }
@@ -66,7 +76,10 @@ class BlogForms extends Component {
               <CardBody>
                 <FormGroup>
                   <Label htmlFor="cards">Name</Label>
-                  <Input type="text" id="cards" placeholder="Enter your cards name." />
+                  <Input type="text" id="cards" placeholder="Enter your cards name." 
+                    onChange={this.handleCardNameChange}
+                    required="required"
+                    value={this.props.cardName}/>
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="content">Content</Label>
@@ -93,7 +106,7 @@ class BlogForms extends Component {
                   type="reset"
                   size="sm"
                   color="danger"
-                  onClick={this.backHandle}>
+                  onClick={this.handleBack}>
                   <i className="fa fa-ban"></i> Back
                 </Button>
               </CardFooter>
@@ -105,4 +118,21 @@ class BlogForms extends Component {
   }
 }
 
-export default BlogForms;
+function mapStateToProps(state) {
+  const {
+    cardName,
+  } = state.blog;
+  return {
+    cardName: cardName,
+  };
+}
+
+export const mapDispatchToProps = dispatch => ({
+  // sendT1Query: data => dispatch(sendT1Query(data)),
+  updateCardName: cardName => dispatch(updateCardName(cardName)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(BlogForms);
